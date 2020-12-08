@@ -1,0 +1,4 @@
+HostName,PortNumber,Service,login,
+abc.amazonaws.com,443,www,-,
+xyz.com,443,www,login,
+qqq.weather.com,443,www,-,

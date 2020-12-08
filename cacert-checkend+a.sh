@@ -2,10 +2,10 @@
 
 # サーバ一覧ファイルの在りか
 # URLList="/home/vuls/CAcert/list-hosts.csv"
-URLList="/mnt/z/空調生産本部ITソリューション開発Ｇ/LVL2/開発g/脆弱性情報/cacert/list-hosts.csv"
+URLList="/mnt/z/path/to/cacert/list-hosts.csv"
 
 # Zドライブのログ保存先
-Z_LOG_DIR="/mnt/z/空調生産本部ITソリューション開発Ｇ/LVL2/開発g/脆弱性情報/cacert/result/"
+Z_LOG_DIR="/mnt/z/path/to/cacert/result/"
 
 # Home: フルパスで
 HOME="/home/vuls/CAcert/"
@@ -28,7 +28,7 @@ RESULT_EXPIRE="**30日以内に、有効期限が到来します**"    # **は�
 RESULT_UNABLE_TO_LOAD="証明書を取得できませんでした"
 
 # Webhook 投稿先 チャネル「サーバー証明書」＞コネクタ「CAcertCheckend」
-CERTCHECK_URL="https://outlook.office.com/webhook/5128e755-da59-41a8-8d27-4fee03024f2a@457cc84b-70d4-4a9b-954b-e85b83bb4046/IncomingWebhook/dd0b0d499d46445cb11357a5544db9cb/972a30b3-6a36-48b7-91b4-71f796dd7131"
+CERTCHECK_URL="https://outlook.office.com/webhook/.../IncomingWebhook/..."
 
 # 全証明書が更新間近でなかった場合の通知判定用積算値
 OPENSSL_RET_VALUE=0
@@ -44,11 +44,10 @@ MyOpenSSL() {
     echo HOST:$1 PORT:$2 SERVICE:$3
 
     if [ $3 == "startssl" ]; then
-        openssl11 s_client -proxy gwproxy.daikin.co.jp:3128 -connect $1:$2 ${OsslClientOpts} -name $1 -starttls smtp < /dev/null 1>> ${HOME}cacert-$1.txt 2>&1
+        openssl11 s_client -proxy proxy.hoge.co.jp:3128 -connect $1:$2 ${OsslClientOpts} -name $1 -starttls smtp < /dev/null 1>> ${HOME}cacert-$1.txt 2>&1
     else
-        # プロキシー Trustwave の証明書が出てくる。が、証明書の期限は接続先のもの
-        # openssl11 s_client -proxy gwproxy.daikin.co.jp:3128 -connect ${HOST}:${PORT} ${OsslClientOpts} -servername ${HOST}  <nul | openssl11 x509 ${OsslX509Opts} -enddate
-        openssl11 s_client -proxy gwproxy.daikin.co.jp:3128 -connect $1:$2 ${OsslClientOpts} -servername $1 < /dev/null 1>> ${HOME}cacert-$1.txt 2>&1
+        # openssl11 s_client -proxy proxy.hoge.co.jp:3128 -connect ${HOST}:${PORT} ${OsslClientOpts} -servername ${HOST}  <nul | openssl11 x509 ${OsslX509Opts} -enddate
+        openssl11 s_client -proxy proxy.hoge.co.jp:3128 -connect $1:$2 ${OsslClientOpts} -servername $1 < /dev/null 1>> ${HOME}cacert-$1.txt 2>&1
     fi
     openssl11 x509 -in ${HOME}cacert-$1.txt ${OsslX509Opts} -enddate 1>> ${HOME}cacert-$1.txt 2>&1
 
@@ -139,7 +138,7 @@ SendMsgToTeams() {
     echo {$1, $2, $3} >> ${HOME}cacert-$1.txt
     echo "SendMsgToTeams() から、curl を実行します"
 
-    curl -x gwproxy.daikin.co.jp:3128 -H 'Accept: application/json' -H "Content-type: application/json" -X POST \
+    curl -x proxy.hoge.co.jp:3128 -H 'Accept: application/json' -H "Content-type: application/json" -X POST \
     	 -d '{"title": "'$TITLE'", "text": "- Host='$1'\n\n- NotAfter='$2'\n\n- Result='$3'"}' ${CERTCHECK_URL}
 
 }
@@ -202,7 +201,7 @@ echo "Main() 内の OPENSSL_RET_VALUE: "$((OPENSSL_RET_VALUE))
 if [ $((OPENSSL_RET_VALUE)) -eq 0 ]; then
     echo "OPENSSL_RET_VALUE が 0 なので、Main() から、curl を実行し、MESS_NO_EXPIRE を通知します"
 
-    curl -x gwproxy.daikin.co.jp:3128 -H 'Accept: application/json' -H "Content-type: application/json" -X POST \
+    curl -x proxy.hoge.co.jp:3128 -H 'Accept: application/json' -H "Content-type: application/json" -X POST \
 	 	 -d '{"title": "'$TITLE'", "text": "'$MESS_NO_EXPIRE'"}' ${CERTCHECK_URL}
 
     echo '{"title": "'$TITLE'", "text": "'$MESS_NO_EXPIRE'"}'

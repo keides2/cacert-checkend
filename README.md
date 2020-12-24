@@ -13,6 +13,7 @@
       - [4.1.4 証明書の取得](#414-証明書の取得)
       - [4.1.5 Teame 通知](#415-teame-通知)
       - [4.1.6 ログ](#416-ログ)
+  - [5. ライセンス License](#5-ライセンス-license)
 
 <!-- /TOC -->
 # SSLサーバー証明書の有効期限を自動的に取得し更新漏れを防ぐツール
@@ -163,5 +164,11 @@
   100   191    0     1  100   190      0     29  0:00:06  0:00:06 --:--:--     0
   1.
 ```
+
+## 5. ライセンス License
+
+事情によりしばらく `NO LICENSE` といたしますので、`GitHub` の利用規約と著作権法が定める範囲を超えた利用・複製・再頒布などを一切禁止させていただきます。
+
+Due to circumstances, it will be `NO LICENSE` for a while, so I will prohibit any use, duplication, redistribution, etc. beyond the scope of the terms of service of` GitHub` and the copyright law.
 
 ---
